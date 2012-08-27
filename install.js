@@ -31,7 +31,7 @@ function installComplete () {
 }
 
 function runRedStart () {
-	exec("red-start", ["--no-prompt"], null, false, function (success) {
+	exec("red-start", ["--no-prompt", "--no-git"], null, false, function (success) {
 		if (!success) {
 			console.error("Something went wrong trying to run red-start");
 		}
