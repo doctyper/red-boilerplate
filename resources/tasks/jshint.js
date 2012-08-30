@@ -81,9 +81,15 @@ module.exports = function (grunt) {
 		return str.slice(0, i + 1);
 	}
 
-	grunt.registerTask("jshint", "JSHint your JavaScript.", function () {
+	grunt.registerTask("jshint", "JSHint your JavaScript.", function (mode) {
 
 		var done = this.async();
+
+		if (mode === "browser") {
+			jshintOptions.node = false;
+			jshintOptions.devel = false;
+			jshintOptions.browser = true;
+		}
 
 		var hasErrors = false;
 		var files = getJSFiles(path.join("project", "static", "js"));
@@ -126,5 +132,5 @@ module.exports = function (grunt) {
 		tasks: ["jshint"]
 	});
 
-	grunt.config.set("build.jshint", "jshint");
+	grunt.config.set("build.jshint", "jshint:browser");
 };
