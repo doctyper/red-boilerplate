@@ -17,6 +17,9 @@ var libpath = "project/static/js/libs";
 
 var libdir = wrench.mkdirSyncRecursive(libpath);
 
+// Spacer
+console.log("");
+
 (function downloadLib(lib, plugin) {
 	lib = lib || jslibs.shift();
 
