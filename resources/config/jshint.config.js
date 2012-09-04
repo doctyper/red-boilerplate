@@ -27,12 +27,12 @@ module.exports = {
         "couch"         : false,
         "wsh"           : false,    // Windows Scripting Host.
 
-        "jquery"        : true,
+        "jquery"        : false,
         "prototypejs"   : false,
         "mootools"      : false,
         "dojo"          : false,
 
-        "predef"        : ["$", "jQuery", "define", "require", "History", "Modernizr"],
+        "predef"        : ["define", "require", "Modernizr"],
 
 
         // Development.
