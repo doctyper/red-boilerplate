@@ -22,7 +22,7 @@ module.exports = {
 
         // Predefined globals whom JSHint will ignore.
         "browser"       : true,     // Standard browser globals e.g. `window`, `document`.
-        "node"          : true,
+        "node"          : false,
         "rhino"         : false,
         "couch"         : false,
         "wsh"           : false,    // Windows Scripting Host.
