@@ -17,6 +17,9 @@
 		"ecstatic": ">=0.1.6",
 		"optimist": ">=0.3.4"
 	},
+	"scripts" : {
+		"install" : "node install.js"
+	},
 	"config": {
 		"scope": "project/static/js"
 	}
