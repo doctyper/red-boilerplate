@@ -84,6 +84,7 @@ exec("ruby", ["-v"], null, true, function (success) {
 							if (success) {
 								moveGemfileToRoot();
 							} else {
+								console.error("Error installing gems. Perhaps you need sudo privileges? (Ugh)");
 								process.exit(false);
 							}
 						});
