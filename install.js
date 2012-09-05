@@ -9,7 +9,6 @@ var spawn = function (exec, args, suppress, doneCB) {
 	process.stdin.resume();
 
 	var child = cp.spawn(exec, args || [], {
-		cwd: cwd,
 		env: null,
 		setsid: true
 	});
