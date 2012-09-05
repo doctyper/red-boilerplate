@@ -14,10 +14,18 @@ var exec = function (exec, args, cwd, suppress, doneCB) {
 		env: null,
 		setsid: true,
 		stdio: (suppress) ? null : "inherit"
-	});
+	}), data;
 
-	child.addListener("exit", function (code) {
-		doneCB(!code);
+	if (child.stdout) {
+		data = "";
+
+		child.stdout.on("data", function (buffer) {
+			data += buffer.toString();
+		});
+	}
+
+	child.on("exit", function (code) {
+		doneCB(!code, data);
 	});
 };
 
@@ -52,9 +60,25 @@ exec("ruby", ["-v"], null, true, function (success) {
 	if (success) {
 		exec("gem", ["-v"], null, true, function (success) {
 			if (success) {
-				exec("bundle", ["-v"], null, true, function (success) {
+				exec("bundle", ["-v"], null, true, function (success, data) {
 					if (success) {
-						moveGemfileToRoot();
+						var version = data.toString().replace("Bundler version", "").trim();
+
+						if (version < "1.2.0") {
+							exec("gem", ["update", "bundler"], null, false, function (success) {
+								if (success) {
+									moveGemfileToRoot();
+								} else {
+									console.log("You are using Bundler version %s".replace("%s", version));
+									console.log("Bundler version 1.2.0 or higher is required");
+									console.log("Please update your gem via `gem update bundler` and re-install the Caboose plugin");
+
+									process.exit(false);
+								}
+							});
+						} else {
+							moveGemfileToRoot();
+						}
 					} else {
 						exec("gem", ["install", "bundler"], null, false, function (success) {
 							if (success) {
