@@ -5,7 +5,7 @@
 var fs = require("fs");
 var cp = require("child_process");
 var path = require("path");
-var installpath = "./project/static/js/libs/_install";
+var installpath = path.join(__dirname, "project/static/js/libs/_install");
 
 var exec = function (exec, args, cwd, suppress, doneCB) {
 	process.stdin.resume();
@@ -21,6 +21,7 @@ var exec = function (exec, args, cwd, suppress, doneCB) {
 
 	if (!suppress) {
 		child.stdout.pipe(process.stdout);
+		child.stderr.pipe(process.stderr);
 	}
 
 	child.addListener("exit", function (code) {
@@ -29,10 +30,27 @@ var exec = function (exec, args, cwd, suppress, doneCB) {
 };
 
 exec("node", [path.join(installpath, "installer")], null, false, function (success) {
+	if (!success) {
+		console.error("An error occurred while installing external libraries.");
+		process.exit(false);
+	}
+
 	if (fs.existsSync(installpath)) {
-		fs.unlinkSync(path.join(installpath, "installer.js"));
-		fs.unlinkSync(path.join(installpath, "libs.config.js"));
+		var installer = path.join(installpath, "installer.js");
+		var config = path.join(installpath, "libs.config.js");
+
+		if (fs.existsSync(installer)) {
+			fs.unlinkSync(installer);
+		}
+
+		if (fs.existsSync(config)) {
+			fs.unlinkSync(config);
+		}
+
 		fs.rmdirSync(installpath);
+	} else {
+		console.error("Can't find %s. Exiting.".replace("%s", installpath));
+		process.exit(false);
 	}
 
 	process.exit();
