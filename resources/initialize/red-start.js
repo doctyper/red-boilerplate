@@ -5,10 +5,11 @@
 var fs = require("fs");
 var cp = require("child_process");
 
-var spawn = function (exec, args, suppress, doneCB) {
+var exec = function (exec, args, cwd, suppress, doneCB) {
 	process.stdin.resume();
 
 	var child = cp.spawn(exec, args || [], {
+		cwd: cwd,
 		env: null,
 		setsid: true
 	});
@@ -25,33 +26,12 @@ var spawn = function (exec, args, suppress, doneCB) {
 	});
 };
 
-var exec = function (exec, suppress, doneCB) {
-
-	cp.exec(exec, function (error, stdout, stderr) {
-
-		if (!suppress) {
-
-			if (stdout) {
-				console.log(stdout);
-			}
-
-			if (stderr) {
-				console.error(stderr);
-			}
-		}
-
-		if (doneCB) {
-			doneCB(!error);
-		}
-	});
-};
-
 function installComplete () {
 	process.exit();
 }
 
-function finishSetup () {
-	spawn("sh", ["./scripts/setup.sh"], false, function (success) {
+function runSetup () {
+	exec("sh", ["./scripts/setup.sh"], null, false, function (success) {
 		if (!success) {
 			console.error("Something went wrong trying to run setup.sh");
 		}
@@ -61,19 +41,18 @@ function finishSetup () {
 }
 
 function runRedStart () {
-	exec("source env/bin/activate && red-start --no-prompt --no-git", false, function (success) {
+	exec("red-start", ["--no-prompt", "--no-git"], null, false, function (success) {
 		if (!success) {
 			console.error("Something went wrong trying to run red-start");
 			installComplete();
 		}
 
-		finishSetup();
+		runSetup();
 	});
 }
 
 function installRedStart () {
-
-	exec("source env/bin/activate && pip install red-start", false, function (success) {
+	exec("pip", ["install", "red-start"], null, false, function (success) {
 		if (success) {
 			runRedStart();
 		} else {
@@ -84,7 +63,7 @@ function installRedStart () {
 }
 
 function testRedStart () {
-	exec("source env/bin/activate && red-start --help", true, function (success) {
+	exec("red-start", ["--help"], null, true, function (success) {
 		if (success) {
 			runRedStart();
 		} else {
@@ -93,32 +72,21 @@ function testRedStart () {
 	});
 }
 
-function setupVirtualEnv () {
-	spawn("virtualenv", ["./env"], true, function (success) {
+function testPipSupport () {
+	exec("pip", ["--version"], null, true, function (success) {
 		if (success) {
 			testRedStart();
 		} else {
-			console.error("Something went wrong when initializing the virtualenv.");
-			installComplete();
-		}
-	});
-}
-
-function testVirtualEnvSupport () {
-	spawn("virtualenv", ["--version"], true, function (success) {
-		if (success) {
-			setupVirtualEnv();
-		} else {
-			console.error("You need to install virtualenv before installing RED Start.");
+			console.error("You need to install pip before installing RED Start.");
 			installComplete();
 		}
 	});
 }
 
 function testPythonSupport () {
-	spawn("python", ["--version"], true, function (success) {
+	exec("python", ["--version"], null, true, function (success) {
 		if (success) {
-			testVirtualEnvSupport();
+			testPipSupport();
 		} else {
 			console.error("You need to install Python before installing RED Start.");
 			installComplete();
@@ -145,7 +113,7 @@ function testPythonSupport () {
 	if (!isInstalled) {
 		testPythonSupport();
 	} else {
-		console.log("Looks like RED Start is already installed. Skipping ahead...");
-		finishSetup();
+		console.log("Looks like this project was initialized using RED Start. Skipping ahead...");
+		installComplete();
 	}
 }());
