@@ -147,7 +147,7 @@ function testPythonSupport () {
 	if (!isInstalled) {
 		testPythonSupport();
 	} else {
-		console.log("Looks like this project was initialized using RED Start. Skipping ahead...");
-		installComplete();
+		console.log("Looks like RED Start is already installed. Skipping ahead...");
+		finishSetup();
 	}
 }());
