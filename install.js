@@ -12,7 +12,7 @@ var https = require("https");
 var wrench = require("wrench");
 var colors = require("colors");
 
-var jslibs = require("libs").libs;
+var jslibs = require("./libs").libs;
 var libpath = "project/static/js/libs";
 
 var libdir = wrench.mkdirSyncRecursive(libpath);
