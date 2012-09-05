@@ -47,13 +47,15 @@ var exec = function (exec, suppress, doneCB) {
 };
 
 function installComplete () {
-	process.exit();
+	exec("chmod -R 755 project", false, function () {
+		process.exit();
+	});
 }
 
 function finishSetup () {
 	spawn("sh", ["./scripts/setup.sh"], false, function (success) {
 		if (!success) {
-			console.error("Something went wrong trying to run red-start");
+			console.error("Something went wrong trying to run setup.sh");
 		}
 
 		installComplete();
