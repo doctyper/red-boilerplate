@@ -5,7 +5,7 @@
 var fs = require("fs");
 var cp = require("child_process");
 var path = require("path");
-var installpath = "project/static/js/libs/_install";
+var installpath = "./project/static/js/libs/_install";
 
 var exec = function (exec, args, cwd, suppress, doneCB) {
 	process.stdin.resume();
