@@ -3,7 +3,7 @@
 	"description": "Statix is a static website generator.",
 	"version": "0.0.3",
 	"scripts": {
-		"install" : "npm install statix -g",
+		"install" : "[ $(which statix) ] || npm install statix -g",
 		"update" : "npm update statix -g"
 	}
 }
