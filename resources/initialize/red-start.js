@@ -26,17 +26,13 @@ var exec = function (exec, args, cwd, suppress, doneCB) {
 	});
 };
 
-function installComplete () {
-	process.exit();
-}
-
 function runSetup () {
 	exec("sh", ["./scripts/setup.sh"], null, false, function (success) {
 		if (!success) {
 			console.error("Something went wrong trying to run setup.sh");
 		}
 
-		installComplete();
+		process.exit();
 	});
 }
 
@@ -44,7 +40,7 @@ function runRedStart () {
 	exec("red-start", ["--no-prompt", "--no-git"], null, false, function (success) {
 		if (!success) {
 			console.error("Something went wrong trying to run red-start");
-			installComplete();
+			process.exit(false);
 		}
 
 		runSetup();
@@ -57,7 +53,7 @@ function installRedStart () {
 			runRedStart();
 		} else {
 			console.error("This bit might require sudo privileges. Try installing via `sudo pip install red-start`.");
-			installComplete();
+			process.exit(false);
 		}
 	});
 }
@@ -78,7 +74,7 @@ function testPipSupport () {
 			testRedStart();
 		} else {
 			console.error("You need to install pip before installing RED Start.");
-			installComplete();
+			process.exit(false);
 		}
 	});
 }
@@ -89,7 +85,7 @@ function testPythonSupport () {
 			testPipSupport();
 		} else {
 			console.error("You need to install Python before installing RED Start.");
-			installComplete();
+			process.exit(false);
 		}
 	});
 }
