@@ -5,6 +5,27 @@
 var fs = require("fs");
 var cp = require("child_process");
 
+var spawn = function (exec, args, suppress, doneCB) {
+	process.stdin.resume();
+
+	var child = cp.spawn(exec, args || [], {
+		cwd: cwd,
+		env: null,
+		setsid: true
+	});
+
+	process.stdin.resume();
+	process.stdin.pipe(child.stdin, {end: false});
+
+	if (!suppress) {
+		child.stdout.pipe(process.stdout);
+	}
+
+	child.addListener("exit", function (code) {
+		doneCB(!code);
+	});
+};
+
 var exec = function (exec, suppress, doneCB) {
 
 	cp.exec(exec, function (error, stdout, stderr) {
@@ -30,13 +51,24 @@ function installComplete () {
 	process.exit();
 }
 
-function runRedStart () {
-	exec("source env/bin/activate && red-start --no-prompt --no-git", false, function (success) {
+function finishSetup () {
+	spawn("sh", ["./scripts/setup.sh"], false, function (success) {
 		if (!success) {
 			console.error("Something went wrong trying to run red-start");
 		}
 
 		installComplete();
+	});
+}
+
+function runRedStart () {
+	exec("source env/bin/activate && red-start --no-prompt --no-git", false, function (success) {
+		if (!success) {
+			console.error("Something went wrong trying to run red-start");
+			installComplete();
+		}
+
+		finishSetup();
 	});
 }
 
@@ -52,17 +84,6 @@ function installRedStart () {
 	});
 }
 
-function setupVirtualEnv () {
-	exec("virtualenv ./env", true, function (success) {
-		if (success) {
-			testRedStart();
-		} else {
-			console.error("Something went wrong when initializing the virtualenv.");
-			installComplete();
-		}
-	});
-}
-
 function testRedStart () {
 	exec("source env/bin/activate && red-start --help", true, function (success) {
 		if (success) {
@@ -73,8 +94,19 @@ function testRedStart () {
 	});
 }
 
+function setupVirtualEnv () {
+	spawn("virtualenv", ["./env"], true, function (success) {
+		if (success) {
+			testRedStart();
+		} else {
+			console.error("Something went wrong when initializing the virtualenv.");
+			installComplete();
+		}
+	});
+}
+
 function testVirtualEnvSupport () {
-	exec("virtualenv --version", true, function (success) {
+	spawn("virtualenv", ["--version"], true, function (success) {
 		if (success) {
 			setupVirtualEnv();
 		} else {
@@ -85,7 +117,7 @@ function testVirtualEnvSupport () {
 }
 
 function testPythonSupport () {
-	exec("python --version", true, function (success) {
+	spawn("python", ["--version"], true, function (success) {
 		if (success) {
 			testVirtualEnvSupport();
 		} else {
