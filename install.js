@@ -3,60 +3,37 @@
 "use strict";
 
 var fs = require("fs");
+var cp = require("child_process");
 var path = require("path");
+var installpath = "project/static/js/libs/_install";
 
-var url = require("url");
-var http = require("http");
-var https = require("https");
+var exec = function (exec, args, cwd, suppress, doneCB) {
+	process.stdin.resume();
 
-var wrench = require("wrench");
-var colors = require("colors");
+	var child = cp.spawn(exec, args || [], {
+		cwd: cwd,
+		env: null,
+		setsid: true
+	});
 
-var jslibs = require("libs").libs;
-var libpath = "project/static/js/libs";
+	process.stdin.resume();
+	process.stdin.pipe(child.stdin, {end: false});
 
-var libdir = wrench.mkdirSyncRecursive(libpath);
-
-// Spacer
-console.log("");
-
-(function downloadLib(lib, plugin) {
-	lib = lib || jslibs.shift();
-
-	var curr = (plugin || lib);
-
-	var options = url.parse(curr.src);
-	var protocol = (options.protocol === "https:") ? https : http;
-	var filename = curr.filename || (options.pathname.split("/").reverse()[0]);
-	var pluginspath;
-
-	if (plugin) {
-		pluginspath = path.join(libpath, "plugins", lib.pluginsPath);
-		wrench.mkdirSyncRecursive(pluginspath);
+	if (!suppress) {
+		child.stdout.pipe(process.stdout);
 	}
 
-	var file = fs.createWriteStream(path.join(pluginspath || libpath, filename));
-	console.log("    " + (plugin ? "  + " : "") + "Installing %n from %u".replace("%n", curr.name.cyan).replace("%u", curr.src.grey));
-
-	protocol.get(options, function (res) {
-		res.on("data", function (data) {
-			file.write(data);
-		});
-
-		res.on("end", function () {
-			file.end();
-
-			if (lib.plugins && lib.plugins.length) {
-				downloadLib(lib, lib.plugins.shift());
-			} else if (jslibs.length) {
-				downloadLib();
-			} else {
-				if (fs.existsSync("libs.js")) {
-					fs.unlinkSync(("libs.js"));
-				}
-
-				process.exit();
-			}
-		});
+	child.addListener("exit", function (code) {
+		doneCB(!code);
 	});
-}());
+};
+
+exec("node", [path.join(installpath, "installer")], null, false, function (success) {
+	if (fs.existsSync(installpath)) {
+		fs.unlinkSync(path.join(installpath, "installer.js"));
+		fs.unlinkSync(path.join(installpath, "libs.config.js"));
+		fs.rmdirSync(installpath);
+	}
+
+	process.exit();
+});
