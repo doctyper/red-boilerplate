@@ -47,9 +47,7 @@ var exec = function (exec, suppress, doneCB) {
 };
 
 function installComplete () {
-	exec("chmod -R 755 project", false, function () {
-		process.exit();
-	});
+	process.exit();
 }
 
 function finishSetup () {
