@@ -21,25 +21,34 @@ var exec = function (exec, args, cwd, suppress, doneCB) {
 	});
 };
 
-function moveGemfileToRoot() {
-	var gempath = path.join(__dirname, "../tasks/config/Gemfile");
+function detectGemPermission(cb) {
+	var exec = require("child_process").exec,
+		child;
 
-	if (fs.existsSync(gempath)) {
-		exec("mv", [gempath, gempath + ".lock", "."], null, false, function (success) {
-			if (success) {
-				installGems();
-			} else {
-				console.error("Failed to move %s".replace("%s", gempath));
-				process.exit(false);
-			}
-		});
-	} else {
-		installGems();
-	}
+	child = exec("which gem", function (error, stdout, stderr) {
+		if (stdout.toString().trim() === "/usr/bin/gem") {
+			console.log("");
+			console.log("*********************************************************************");
+			console.log("This next bit might require sudo privileges.");
+			console.log("If so, the installer will ask your password for each gem it installs.");
+			console.log("*********************************************************************");
+			console.log("");
+		}
+
+		if (error !== null) {
+			console.error(error);
+		}
+
+		if (cb) {
+			cb();
+		}
+	});
 }
 
 function installGems() {
-	exec("bundle", ["install", "--path", "resources/compass/gems"], null, false, function (success) {
+	var gemfile = path.join("resources", "tasks", "config", "Gemfile");
+
+	exec("bundle", ["install", "--system", "--gemfile", gemfile], null, false, function (success) {
 		if (!success) {
 			console.error("Error installing gems. Perhaps you need sudo privileges? (Ugh)");
 		}
@@ -52,26 +61,28 @@ exec("ruby", ["-v"], null, true, function (success) {
 	if (success) {
 		exec("gem", ["-v"], null, true, function (success) {
 			if (success) {
-				exec("bundle", ["-v"], null, true, function (success) {
-					if (success) {
-						moveGemfileToRoot();
-					} else {
-						exec("gem", ["install", "bundler"], null, false, function (success) {
-							if (success) {
-								moveGemfileToRoot();
-							} else {
-								process.exit(false);
-							}
-						});
-					}
+				detectGemPermission(function () {
+					exec("bundle", ["-v"], null, true, function (success) {
+						if (success) {
+							installGems();
+						} else {
+							exec("gem", ["install", "bundler"], null, false, function (success) {
+								if (success) {
+									installGems();
+								} else {
+									process.exit();
+								}
+							});
+						}
+					});
 				});
 			} else {
 				console.error("You need to install Ruby Gems before installing the Compass Module.");
-				process.exit(false);
+				process.exit();
 			}
 		});
 	} else {
 		console.error("You need to install Ruby before installing the Compass Module.");
-		process.exit(false);
+		process.exit();
 	}
 });
