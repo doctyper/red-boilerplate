@@ -10,8 +10,14 @@ var exec = function (exec, suppress, doneCB) {
 	cp.exec(exec, function (error, stdout, stderr) {
 
 		if (!suppress) {
-			console.log(stdout);
-			console.error(stderr);
+
+			if (stdout) {
+				console.log(stdout);
+			}
+
+			if (stderr) {
+				console.error(stderr);
+			}
 		}
 
 		if (doneCB) {
