@@ -5,5 +5,9 @@
 	"scripts": {
 		"install" : "[ $(which statix) ] || npm install statix -g",
 		"update" : "npm update statix -g"
+	},
+	"systemDependencies": {
+		"node": ">= 0.8.7",
+		"npm": ">= 1.1.59"
 	}
 }
