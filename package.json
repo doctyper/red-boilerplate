@@ -5,5 +5,10 @@
 	"scripts" : {
 		"install": "node resources/initialize/red-start.js",
 		"initialize": "node resources/initialize/red-start.js"
+	},
+	"systemDependencies": {
+		"python": ">= 2.7.2",
+		"pip": ">= 1.1.0",
+		"virtualenv": ">= 1.7.2"
 	}
 }
