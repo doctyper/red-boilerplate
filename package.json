@@ -4,5 +4,9 @@
 	"version": "0.0.1",
 	"dependencies" : {
 		"jshint" : "0.7.x"
+	},
+	"systemDependencies": {
+		"node": ">= 0.8.7",
+		"npm": ">= 1.1.59"
 	}
 }
