@@ -1,0 +1,15 @@
+{
+	"name": "modernizr",
+	"description": "Build out a lean, mean Modernizr machine.",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/doctyper/grunt-modernizr.git"
+	},
+	"dependencies": {
+		"grunt-modernizr": ">=0.1.x"
+	},
+	"systemDependencies": {
+		"node": ">= 0.8.7",
+		"npm": ">= 1.1.59"
+	}
+}
