@@ -24,6 +24,12 @@ var exec = function (exec, args, cwd, suppress, doneCB) {
 		});
 	}
 
+	if (child.stderr) {
+		process.stderr.pipe(child.stderr, {
+			end: true
+		});
+	}
+
 	child.on("exit", function (code) {
 		doneCB(!code, data);
 	});
@@ -38,7 +44,7 @@ function moveGemfileToRoot() {
 				installGems();
 			} else {
 				console.error("Failed to move %s".replace("%s", gempath));
-				process.exit(false);
+				process.exit(success);
 			}
 		});
 	} else {
@@ -69,18 +75,18 @@ exec("ruby", ["-v"], null, true, function (success) {
 								moveGemfileToRoot();
 							} else {
 								console.error("Error installing gems. Perhaps you need sudo privileges? (Ugh)");
-								process.exit(false);
+								process.exit(success);
 							}
 						});
 					}
 				});
 			} else {
 				console.error("You need to install Ruby Gems before installing the Compass Module.");
-				process.exit(false);
+				process.exit(success);
 			}
 		});
 	} else {
 		console.error("You need to install Ruby before installing the Compass Module.");
-		process.exit(false);
+		process.exit(success);
 	}
 });
