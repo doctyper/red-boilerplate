@@ -3,19 +3,21 @@ module.exports = function (grunt) {
 
 	// Project configuration.
 	grunt.config.set("requirejs", {
-		mainConfigFile: "project/static/js/config.js",
-		urlArgs: null,
-		paths: {
-			"jquery": "empty:"
-		},
-		optimize : "uglify",
-		name : grunt.task.directive("<config:meta.projectName>") + "/site",
-		out : "project/static/js/site.min.js",
-		skipModuleInsertion : true
+		desktop : {
+			options : {
+				mainConfigFile : "project/static/js/config.js",
+				urlArgs : null,
+				include : ["config.js"],
+				paths : {
+					"jquery": "empty:"
+				},
+				optimize : "uglify",
+				out : "project/static/js/site.min.js",
+				name : grunt.task.directive("<config:meta.projectName>") + "/site",
+				skipModuleInsertion : true
+			}
+		}
 	});
 
 	grunt.config.set("build.requirejs", "requirejs");
-
-	grunt.loadNpmTasks("grunt-requirejs");
-
 };

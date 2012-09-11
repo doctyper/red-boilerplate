@@ -7,9 +7,7 @@
 	},
 	"dependencies": {
 		"colors": "0.6.x",
-		"wrench": "1.3.x",
-		"requirejs": ">=2.0.x",
-		"grunt-requirejs": ">=0.2.x"
+		"wrench": "1.3.x"
 	},
 	"devDependencies": {
 		"mocha": "1.3.x",
