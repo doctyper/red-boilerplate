@@ -32,7 +32,7 @@ module.exports = {
 			}
 
 			return this.exit();
-		});
+		}.bind(this));
 	},
 
 	runRedStart : function () {
@@ -42,7 +42,7 @@ module.exports = {
 			}
 
 			this.runSetup();
-		});
+		}.bind(this));
 	},
 
 	checkInstall : function () {
