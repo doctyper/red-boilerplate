@@ -2,85 +2,69 @@
 /*global jake, desc, task, error, pkg, installModule, parseFiles */
 "use strict";
 
-var fs = require("fs");
-var cp = require("child_process");
-var path = require("path");
+module.exports = {
+	exec : function (exec, args, cwd, suppress, doneCB) {
+		var cp = require("child_process"),
+			child, data;
 
-var exec = function (exec, args, cwd, suppress, doneCB) {
-	process.stdin.resume();
-
-	var child = cp.spawn(exec, args || [], {
-		cwd: cwd,
-		env: null,
-		setsid: true,
-		stdio: (suppress) ? null : "inherit"
-	}), data;
-
-	if (child.stdout) {
-		data = "";
-
-		child.stdout.on("data", function (buffer) {
-			data += buffer.toString();
+		child = cp.spawn(exec, args || [], {
+			cwd: cwd,
+			env: null,
+			setsid: true,
+			stdio: (suppress) ? null : "inherit"
 		});
-	}
 
-	if (child.stderr) {
-		process.stderr.pipe(child.stderr, {
-			end: true
-		});
-	}
+		if (child.stdout) {
+			data = "";
 
-	child.on("exit", function (code) {
-		doneCB(!code, data);
-	});
-};
-
-function moveGemfileToRoot() {
-	var gempath = path.join(__dirname, "../tasks/config/Gemfile");
-
-	if (fs.existsSync(gempath)) {
-		exec("mv", [gempath, gempath + ".lock", "."], null, false, function (success) {
-			if (success) {
-				installGems();
-			} else {
-				console.error("Failed to move %s".replace("%s", gempath));
-				process.exit(success);
-			}
-		});
-	} else {
-		installGems();
-	}
-}
-
-function installGems() {
-	exec("bundle", ["install", "--path", "resources/compass/gems"], null, false, function (success) {
-		if (!success) {
-			console.error("Error installing gems. Perhaps you need sudo privileges? (Ugh)");
+			child.stdout.on("data", function (buffer) {
+				data += buffer.toString();
+			});
 		}
 
-		process.exit();
-	});
-}
-
-exec("ruby", ["-v"], null, true, function (success) {
-	if (success) {
-		exec("gem", ["-v"], null, true, function (success) {
-			if (success) {
-				exec("bundle", ["-v"], null, true, function (success) {
-					if (success) {
-						moveGemfileToRoot();
-					} else {
-						console.error("You need to install Bundler before installing the Compass Module (`gem install bundler`).");
-						process.exit(success);
-					}
-				});
-			} else {
-				console.error("You need to install Ruby Gems before installing the Compass Module.");
-				process.exit(success);
-			}
+		child.on("exit", function (code) {
+			doneCB(!code, data);
 		});
-	} else {
-		console.error("You need to install Ruby before installing the Compass Module.");
-		process.exit(success);
+	},
+
+	installGems : function () {
+		this.exec("bundle", ["install", "--path", "resources/compass/gems"], null, false, function (success, data) {
+			if (!success) {
+				return this.exit("No executable named bundle found.");
+			}
+
+			return this.exit();
+		}.bind(this));
+	},
+
+	moveGemfileToRoot : function () {
+		var fs = require("fs"),
+			path = require("path"),
+			gempath = path.join(__dirname, "../tasks/config/Gemfile");
+
+		if (fs.existsSync(gempath)) {
+			this.exec("mv", [gempath, gempath + ".lock", "."], null, false, function (success) {
+				if (success) {
+					this.installGems();
+				} else {
+					return this.exit("Failed to move %s".replace("%s", gempath));
+				}
+			}.bind(this));
+		} else {
+			this.installGems();
+		}
+	},
+
+	exit : function (error) {
+		if (this.cb) {
+			this.cb(error);
+		} else {
+			process.exit();
+		}
+	},
+
+	run : function (cb) {
+		this.cb = cb;
+		this.moveGemfileToRoot();
 	}
-});
+};
