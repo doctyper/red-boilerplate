@@ -53,7 +53,11 @@ module.exports = function (grunt) {
 		"customTests" : [],
 
 		// Files added here will be excluded when looking for Modernizr refs.
-		"excludeFiles" : []
+		"excludeFiles" : [
+			"env/**/*",
+			"node_modules/**/*",
+			".{git,sass-cache}/**/*"
+		]
 	});
 
 	grunt.config.set("watch.modernizr", {
