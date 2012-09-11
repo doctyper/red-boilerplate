@@ -70,14 +70,8 @@ exec("ruby", ["-v"], null, true, function (success) {
 					if (success) {
 						moveGemfileToRoot();
 					} else {
-						exec("gem", ["install", "bundler"], null, false, function (success) {
-							if (success) {
-								moveGemfileToRoot();
-							} else {
-								console.error("Error installing gems. Perhaps you need sudo privileges? (Ugh)");
-								process.exit(success);
-							}
-						});
+						console.error("You need to install Bundler before installing the Compass Module (`gem install bundler`).");
+						process.exit(success);
 					}
 				});
 			} else {
