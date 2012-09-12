@@ -28,7 +28,7 @@ module.exports = {
 	runSetup : function () {
 		this.exec("sh", ["./scripts/setup.sh"], null, false, function (success) {
 			if (!success) {
-				return this.exit("Something went wrong trying to run setup.sh");
+				return this.exit("Something went wrong attempting to run scripts/setup.sh");
 			}
 
 			return this.exit();
@@ -38,7 +38,7 @@ module.exports = {
 	runRedStart : function () {
 		this.exec("red-start", ["--no-prompt", "--no-git"], null, false, function (success) {
 			if (!success) {
-				return this.exit("No executable named red-start found.");
+				return this.exit("An error occured attempting to run red-start.");
 			}
 
 			this.runSetup();
