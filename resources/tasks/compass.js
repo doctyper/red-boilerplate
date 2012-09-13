@@ -28,7 +28,7 @@ module.exports = function (grunt) {
 	});
 
 	grunt.config.set("watch.compass", {
-		files: "resources/compass/sass/**/*.scss",
+		files: "resources/compass/s{a,c}ss/**/*.scss",
 		tasks: ["compass:dev"]
 	});
 
