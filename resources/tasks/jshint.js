@@ -128,7 +128,7 @@ module.exports = function (grunt) {
 	});
 
 	grunt.config.set("watch.jshint", {
-		files: "project/static/js/**/*.js",
+		files: "project/static/js/**/*[^.min].js",
 		tasks: ["jshint"]
 	});
 
