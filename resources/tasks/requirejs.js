@@ -19,5 +19,10 @@ module.exports = function (grunt) {
 		}
 	});
 
+	grunt.config.set("watch.requirejs", {
+		files: "project/static/js/**/*[^.min].js",
+		tasks: ["requirejs"]
+	});
+
 	grunt.config.set("build.requirejs", "requirejs");
 };
