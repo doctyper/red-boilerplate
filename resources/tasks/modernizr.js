@@ -60,6 +60,14 @@ module.exports = function (grunt) {
 		]
 	});
 
+	grunt.config.set("watch.modernizr", {
+		files: [
+			"project/static/js/**/*[^.min].js",
+			"resources/compass/{sass,scss}/**/*.scss"
+		],
+		tasks: ["modernizr"]
+	});
+
 	grunt.config.set("build.modernizr", "modernizr");
 
 	grunt.loadNpmTasks("grunt-modernizr");
