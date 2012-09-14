@@ -10,5 +10,10 @@
 		"python": ">= 2.7.2",
 		"pip": ">= 1.1.0",
 		"virtualenv": ">= 1.7.2"
+	},
+	"config": {
+		"requiredPaths": [
+			"env"
+		]
 	}
 }
