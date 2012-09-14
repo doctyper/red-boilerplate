@@ -19,6 +19,10 @@
 		"initialize" : "node resources/initialize/caboose.js"
 	},
 	"config": {
-		"scope": "resources/compass"
+		"scope": "resources/compass",
+		"requiredPaths": [
+			".bundle",
+			"resources/compass/gems"
+		]
 	}
 }
