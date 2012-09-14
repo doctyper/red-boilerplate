@@ -6,8 +6,9 @@ module.exports = function (grunt) {
 
 		var fs = require("fs");
 		var cp = require("child_process");
+		var pkg = require("./utils/pkg");
 
-		var jsDir = "project/static/js/";
+		var jsDir = "./project/static/js/";
 		var runner = jsDir + "test/runner.js";
 
 		if (!fs.existsSync(runner)) {
@@ -15,13 +16,13 @@ module.exports = function (grunt) {
 			process.exit();
 		}
 
-		var child = cp.spawn("npm", ["install"], {
-			env: null,
-			setsid: true,
-			stdio: "inherit"
+		var devDeps = Object.keys(pkg.devDependencies).filter(function (dep) {
+			return !fs.existsSync("./node_modules/" + dep);
+		}).map(function (dep) {
+			return [dep, pkg.devDependencies[dep]].join("@");
 		});
 
-		child.addListener("exit", function () {
+		var runTests = function () {
 			var child = cp.spawn("node", [runner, "-m", mode, "-r", jsDir], {
 				env: null,
 				setsid: true,
@@ -31,7 +32,23 @@ module.exports = function (grunt) {
 			child.addListener("exit", function () {
 				done();
 			});
-		});
+		};
+
+		var installDependencies = function () {
+			var child = cp.spawn("npm", ["install"].concat(devDeps), {
+				env: null,
+				setsid: true,
+				stdio: "inherit"
+			});
+
+			child.addListener("exit", runTests);
+		};
+
+		if (devDeps.length) {
+			installDependencies();
+		} else {
+			runTests();
+		}
 
 	});
 
