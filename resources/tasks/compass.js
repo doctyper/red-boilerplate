@@ -6,10 +6,10 @@ module.exports = function (grunt) {
 		dev: {
 			src: "resources/compass/scss",
 			dest: "project/static/css",
+			outputstyle: "expanded",
 			linecomments: true,
 			forcecompile: false,
 			images: "project/static/img",
-			outputstyle: "expanded",
 			relativeassets: true,
 			bundleExec: true
 		},
