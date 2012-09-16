@@ -4,7 +4,7 @@ module.exports = function (grunt) {
 	// Project configuration.
 	grunt.config.set("compass", {
 		dev: {
-			src: "resources/compass/sass",
+			src: "resources/compass/scss",
 			dest: "project/static/css",
 			linecomments: true,
 			forcecompile: false,
