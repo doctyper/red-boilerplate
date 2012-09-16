@@ -4,7 +4,6 @@ module.exports = function (grunt) {
 	// Project configuration.
 	grunt.config.set("compass", {
 		dev: {
-			config: "resources/compass/config.rb",
 			src: "resources/compass/sass",
 			dest: "project/static/css",
 			linecomments: true,
@@ -15,7 +14,6 @@ module.exports = function (grunt) {
 			bundleExec: true
 		},
 		prod: {
-			config: "<config:compass.dev.config>",
 			src: "<config:compass.dev.src>",
 			dest: "<config:compass.dev.dest>",
 			outputstyle: "compressed",
