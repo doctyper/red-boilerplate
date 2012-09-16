@@ -8,7 +8,7 @@ module.exports = function (grunt) {
 			dest: "project/static/css",
 			outputstyle: "expanded",
 			linecomments: true,
-			forcecompile: false,
+			forcecompile: true,
 			images: "project/static/img",
 			relativeassets: true,
 			bundleExec: true
@@ -18,7 +18,7 @@ module.exports = function (grunt) {
 			dest: "<config:compass.dev.dest>",
 			outputstyle: "compressed",
 			linecomments: false,
-			forcecompile: true,
+			forcecompile: "<config:compass.dev.forcecompile>",
 			images: "<config:compass.dev.images>",
 			relativeassets: "<config:compass.dev.relativeassets>",
 			bundleExec: "<config:compass.dev.bundleExec>"
