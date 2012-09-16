@@ -7,7 +7,7 @@
 		"url": "https://github.com/ff0000/caboose.git"
 	},
 	"dependencies": {
-		"grunt-compass": "0.2.x"
+		"grunt-compass": ">= 0.3.x"
 	},
 	"systemDependencies": {
 		"ruby": ">= 1.8.7",
