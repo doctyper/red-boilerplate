@@ -10,6 +10,7 @@ module.exports = function (grunt) {
 			linecomments: true,
 			forcecompile: true,
 			images: "project/static/img",
+			fonts: "project/static/fonts",
 			relativeassets: true,
 			bundleExec: true
 		},
@@ -20,6 +21,7 @@ module.exports = function (grunt) {
 			linecomments: false,
 			forcecompile: "<config:compass.dev.forcecompile>",
 			images: "<config:compass.dev.images>",
+			fonts: "<config:compass.dev.fonts>",
 			relativeassets: "<config:compass.dev.relativeassets>",
 			bundleExec: "<config:compass.dev.bundleExec>"
 		}
