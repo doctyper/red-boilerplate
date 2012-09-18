@@ -9,7 +9,8 @@
 	"systemDependencies": {
 		"python": ">= 2.7.2",
 		"pip": ">= 1.1.0",
-		"virtualenv": ">= 1.7.2"
+		"virtualenv": ">= 1.7.2",
+		"red-start": ">= 0.1.6"
 	},
 	"config": {
 		"requiredPaths": [
