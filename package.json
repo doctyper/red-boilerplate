@@ -15,6 +15,10 @@
 	"config": {
 		"requiredPaths": [
 			"env"
+		],
+		"excludePaths": [
+			"env",
+			"uploads"
 		]
 	}
 }
