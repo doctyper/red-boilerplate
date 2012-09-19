@@ -23,6 +23,11 @@
 		"requiredPaths": [
 			".bundle",
 			"resources/compass/gems"
+		],
+		"excludePaths": [
+			".sass-cache",
+			".bundle",
+			"resources/compass/gems"
 		]
 	}
 }
